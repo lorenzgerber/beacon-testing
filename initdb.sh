@@ -1,3 +1,15 @@
+#!/bin/bash
+set -e
+echo "Creating user and database"
+psql -U postgres -h localhost <<-EOSQL
+    CREATE USER microaccounts_dev WITH PASSWORD 'r783qjkldDsiu';
+    CREATE DATABASE elixir_beacon_dev;
+    GRANT ALL PRIVILEGES ON DATABASE elixir_beacon_dev TO microaccounts_dev;
+EOSQL
+
+echo "Creating DB schema"
+PGPASSWORD=r783qjkldDsiu \
+    psql -U microaccounts_dev -h localhost -d elixir_beacon_dev <<-EOSQL
 CREATE TABLE beacon_dataset_table (
     id character varying(50) NOT NULL PRIMARY KEY,
     description character varying(800),
@@ -16,17 +28,17 @@ CREATE TABLE beacon_data_table
   UNIQUE (dataset_id, chromosome, "position", alternate)
 );
 
-CREATE OR REPLACE VIEW beacon_dataset AS 
+CREATE OR REPLACE VIEW beacon_dataset AS
     SELECT bdat.id,
         bdat.description,
         bdat.access_type,
         bdat.reference_genome,
         bdat.size
     FROM beacon_dataset_table bdat
-    WHERE (bdat.access_type::text = ANY (ARRAY['PUBLIC'::character varying::text, 'REGISTERED'::character varying::text, 'CONTROLLED'::character varying::text])) 
+    WHERE (bdat.access_type::text = ANY (ARRAY['PUBLIC'::character varying::text, 'REGISTERED'::character varying::text, 'CONTROLLED'::character varying::text]))
     AND bdat.size > 0 AND bdat.reference_genome::text <> ''::text;
 
-CREATE OR REPLACE VIEW beacon_data AS 
+CREATE OR REPLACE VIEW beacon_data AS
     SELECT bd.dataset_id,
         bd.chromosome,
         bd."position",
@@ -34,3 +46,5 @@ CREATE OR REPLACE VIEW beacon_data AS
         ebdat.reference_genome
     FROM beacon_data_table bd
     INNER JOIN beacon_dataset ebdat ON bd.dataset_id::text = ebdat.id::text;
+
+EOSQL
