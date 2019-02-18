@@ -27,12 +27,12 @@ echo "done."
 
 
 echo "Load the samples..."
-    cat 1_chrY_subset.subset.samples.csv | \
+    cat 1_chrY_subset.samples.csv | \
         PGAPASSWORD=r783qjkldDsiu \
         psql -U microaccounts_dev elixir_beacon_dev -c \
         "COPY tmp_sample_table (sample_stable_id,dataset_id) FROM STDIN USING DELIMITERS ';' CSV HEADER"
     
-    cat 1_chr21_subset.subset.samples.csv | \
+    cat 1_chr21_subset.samples.csv | \
         PGAPASSWORD=r783qjkldDsiu \
         psql -U microaccounts_dev elixir_beacon_dev -c \
         "COPY tmp_sample_table (sample_stable_id,dataset_id) FROM STDIN USING DELIMITERS ';' CSV HEADER"
@@ -102,15 +102,35 @@ EOSQL
 echo "done."
 
 
-
-
-echo "Remove temporary data"
 PGPASSWORD=r783qkldDsiu \
     psql -U microaccounts_dev elixir_beacon_dev <<-EOSQL
         TRUNCATE TABLE tmp_sample_table;
         TRUNCATE TABLE tmp_data_sample_table;
 EOSQL
-echo "done"
+
+
+PGPASSWORD=r783qkldDsiu \
+    psql -U microaccounts_dev elixir_beacon_dev <<-EOSQL
+        UPDATE beacon_dataset_table SET variant_cnt =
+        (SELECT count(*) FROM beacon_data_table);
+EOSQL
+
+
+PGPASSWORD=r783qkldDsiu \
+    psql -U microaccounts_dev elixir_beacon_dev <<-EOSQL
+        UPDATE beacon_dataset_table SET call_cnt =
+        (SELECT sum(call_cnt) FROM beacon_data_table);
+EOSQL
+
+
+PGPASSWORD=r783qkldDsiu \
+    psql -U microaccounts_dev elixir_beacon_dev <<-EOSQL
+        UPDATE beacon_dataset_table SET sample_cnt = 
+        (SELECT COUNT(sample_id) FROM beacon_dataset_table dat 
+        INNER JOIN beacon_dataset_sample_table dat_sam ON dat_sam.dataset_id=dat.id 
+        GROUP BY dat.id);
+EOSQL
+
 
 echo "create functions"
 PGAPASSWORD=r783qjkldDsiu psql -h localhost -p 5432 -d elixir_beacon_dev -U microaccounts_dev < /tmp/elixir_beacon_function_summary_response.sql  
