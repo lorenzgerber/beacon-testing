@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 echo "Creating user and database"
-psql -U postgres -h localhost <<-EOSQL
+psql -p 5432 -U postgres <<-EOSQL
     CREATE USER microaccounts_dev WITH PASSWORD 'r783qjkldDsiu';
     CREATE DATABASE elixir_beacon_dev;
     CREATE DATABASE elixir_beacon_testing;
@@ -11,6 +11,6 @@ EOSQL
 
 echo "Creating DB schema"
 PGPASSWORD=r783qjkldDsiu \
-    psql -U microaccounts_dev -h localhost -d elixir_beacon_dev < /tmp/elixir_beacon_db_schema.sql
-    psql -U microaccounts_dev -h localhost -d elixir_beacon_testing < /tmp/elixir_beacon_db_schema.sql
+    psql -p 5432 -U microaccounts_dev -d elixir_beacon_dev < /tmp/elixir_beacon_db_schema.sql
+    psql -p 5432 -U microaccounts_dev -d elixir_beacon_testing < /tmp/elixir_beacon_db_schema.sql
 

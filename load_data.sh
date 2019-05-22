@@ -23,15 +23,6 @@ echo "Load the variants..."
         PGAPASSWORD=r783qjkldDsiu \
         psql -U microaccounts_dev elixir_beacon_dev -c \
         "COPY beacon_data_table (dataset_id,chromosome,start,variant_id,reference,alternate,\"end\","type",sv_length,variant_cnt,call_cnt,sample_cnt, frequency,matching_sample_cnt) FROM STDIN USING DELIMITERS ';' CSV HEADER"
-
-    
-    cat sg10k_chr1.after_QC.phased.AF_updated.variants.csv | \
-        PGAPASSWORD=r783qjkldDsiu \
-        psql -U microaccounts_dev elixir_beacon_dev -c \
-        "COPY beacon_data_table (dataset_id,chromosome,start,variant_id,reference,alternate,\"end\","type",sv_length,variant_cnt,call_cnt,sample_cnt, frequency,matching_sample_cnt) FROM STDIN USING DELIMITERS ';' CSV HEADER"
-    
-    
-    
 echo "done."
 
 
@@ -42,12 +33,6 @@ echo "Load the samples..."
         "COPY tmp_sample_table (sample_stable_id,dataset_id) FROM STDIN USING DELIMITERS ';' CSV HEADER"
     
     cat 1_chr21_subset.samples.csv | \
-        PGAPASSWORD=r783qjkldDsiu \
-        psql -U microaccounts_dev elixir_beacon_dev -c \
-        "COPY tmp_sample_table (sample_stable_id,dataset_id) FROM STDIN USING DELIMITERS ';' CSV HEADER"
-
-    
-    cat sg10k_chr1.after_QC.phased.AF_updated.samples.csv | \
         PGAPASSWORD=r783qjkldDsiu \
         psql -U microaccounts_dev elixir_beacon_dev -c \
         "COPY tmp_sample_table (sample_stable_id,dataset_id) FROM STDIN USING DELIMITERS ';' CSV HEADER"
@@ -89,12 +74,6 @@ cat 1_chrY_subset.variants.matching.samples.csv | \
 "COPY tmp_data_sample_table (dataset_id,chromosome,start,variant_id,reference,alternate,"type",sample_ids) FROM STDIN USING DELIMITERS ';' CSV HEADER"
 
 cat 1_chr21_subset.variants.matching.samples.csv | \
-    PGPASSWORD=r783qjkldDsiu \
-    psql -U microaccounts_dev elixir_beacon_dev -c \
-"COPY tmp_data_sample_table (dataset_id,chromosome,start,variant_id,reference,alternate,"type",sample_ids) FROM STDIN USING DELIMITERS ';' CSV HEADER"
-
-
-cat sg10k_chr1.after_QC.phased.AF_updated.variants.matching.samples.csv | \
     PGPASSWORD=r783qjkldDsiu \
     psql -U microaccounts_dev elixir_beacon_dev -c \
 "COPY tmp_data_sample_table (dataset_id,chromosome,start,variant_id,reference,alternate,"type",sample_ids) FROM STDIN USING DELIMITERS ';' CSV HEADER"
