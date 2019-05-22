@@ -19,12 +19,9 @@ COPY elixir_beacon_db_schema.sql /tmp/
 COPY elixir_beacon_function_summary_response.sql /tmp/
 COPY 1_chrY_subset.samples.csv /tmp/
 COPY 1_chr21_subset.samples.csv /tmp/
-COPY sg10k_chr1.after_QC.phased.AF_updated.samples.csv /tmp/
 COPY 1_chrY_subset.variants.csv /tmp/
 COPY 1_chr21_subset.variants.csv /tmp/
-COPY sg10k_chr1.after_QC.phased.AF_updated.variants.csv /tmp/
 COPY 1_chrY_subset.variants.matching.samples.csv /tmp/
 COPY 1_chr21_subset.variants.matching.samples.csv /tmp/
-COPY sg10k_chr1.after_QC.phased.AF_updated.variants.matching.samples.csv /tmp/
 
 
