@@ -133,7 +133,7 @@ EOSQL
 
 
 echo "create functions"
-PGAPASSWORD=r783qjkldDsiu psql -h localhost -p 5432 -d elixir_beacon_dev -U microaccounts_dev < /tmp/elixir_beacon_function_summary_response.sql  
-PGAPASSWORD=r783qjkldDsiu psql -h localhost -p 5432 -d elixir_beacon_testing -U microaccounts_dev < /tmp/elixir_beacon_function_summary_response.sql  
+PGAPASSWORD=r783qjkldDsiu psql -p 5432 -d elixir_beacon_dev -U microaccounts_dev < /tmp/elixir_beacon_function_summary_response.sql  
+PGAPASSWORD=r783qjkldDsiu psql -p 5432 -d elixir_beacon_testing -U microaccounts_dev < /tmp/elixir_beacon_function_summary_response.sql  
 echo "done"
 
